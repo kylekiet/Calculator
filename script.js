@@ -26,11 +26,13 @@ function operate (a, operator, b) {
 }
 
 function inputBuffIsFull (prev, curr, op) {
-    console.log("buff prev :" + prev.length);
-    console.log("buff curr :" + curr.length);
-    console.log("buff op :" + op.length);
+
     prev = String(prev);
     curr = String(curr);
+
+    console.log("inputBuff prev.length :" + prev.length);
+    console.log("inputBuff curr.length :" + curr.length);
+    console.log("inputBuff op.length :" + op.length);
     if ((prev.length > 0) && (curr.length > 0) && (op.length > 0)) {
         return true;
     } else {
@@ -46,7 +48,7 @@ let prevDisplayed = document.body.querySelector("#display-previous");
 let currInput = ""
     , prevInput = ""
     , operandInput = ""
-    , operatorInBuff = false;
+    , operatorInBuff = "";
 
 
 buttonMenu.addEventListener("click", (e) => {
@@ -57,15 +59,30 @@ buttonMenu.addEventListener("click", (e) => {
     //2. If we have have a curr and we select an operand, prev should be initialized as curr and curr should be emptied
     //      IF and only IF the operand is followed by a number.
     //3. If there is a operand in the input and that same operand is inputted, perform operate(curr, operand, curr);
-
-    if (operatorInBuff) {
+    
+    if ((clicked.className === "number") && (operatorInBuff.length > 0)) {
+        //If there's an operator in the buffer and we select a number
+        //We want to store curr and then clear it to hold a new number.
+        console.log("FOR NUMBER--------")
+        console.log("clicked.id: " + clicked.id + " operatorInBuff = " + operatorInBuff );
+        console.log("In operatorInBuff Check: " + operatorInBuff);
         prevInput = currInput;
         currInput = "";
-        operatorInBuff = false;
+        operatorInBuff = "";
+    } else if (clicked.className === operatorInBuff) {
+        console.log("FOR SAME OPERATOR-------");
+        prevInput = currInput;
     }
+
     switch (clicked.id) {
         case "button-1":
-
+            /*
+            if (operatorInBuff) {
+                prevInput = currInput;
+                currInput = "";
+                operatorInBuff = false;
+            }
+                */
             currInput += ("1");
             break;
         case "button-2":
@@ -101,18 +118,31 @@ buttonMenu.addEventListener("click", (e) => {
             console.log("before add prev: " + prevInput);
             console.log("before add operator: " + operandInput);
             if (inputBuffIsFull(prevInput, currInput, operandInput)) {
+                //If there exists inputs prev, curr, and an operand, we should operate
                 console.log("inside function");
                 let temp = currInput;
+    
+                //move curr to prev and operate for the new curr
                 currInput = operate(Number(prevInput), operandInput, Number(currInput));
-
                 prevInput = temp;
 
             }  
             operandInput = "+";
-            operatorInBuff = true;
+            operatorInBuff = "button-add";
             break;
         case "button-subtract":
+            if (inputBuffIsFull(prevInput, currInput, operandInput)) {
+                //If there exists inputs prev, curr, and an operand, we should operate
+                console.log("inside function");
+                let temp = currInput;
+    
+                //move curr to prev and operate for the new curr
+                currInput = operate(Number(prevInput), operandInput, Number(currInput));
+                prevInput = temp;
+
+            }  
             operandInput = "-";
+            operatorInBuff = "button-subtract";
             break;
         case "button-multiply":
             operandInput = "X";
