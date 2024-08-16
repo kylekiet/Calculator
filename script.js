@@ -6,122 +6,146 @@ let multiply = (a, b) => a * b;
 
 let divide = (a, b) => a/b;
 
-function operate (operator, a, b) {
+function operate (a, operator, b) {
+    a = Number(a);
+    b = Number(b);
     switch (operator) {
-        case " + ":
+        case "+":
             return add(a,b);
             break;
-        case " - ":
+        case "-":
             return subtract(a, b);
             break;
-        case " X ":
+        case "X":
             return multiply(a, b);
             break;
-        case " / ":
+        case "/":
             return divide(a, b);
-            break;
-        default:
             break;
     }
 }
 
+function inputBuffIsFull (prev, curr, op) {
+    console.log("buff prev :" + prev.length);
+    console.log("buff curr :" + curr.length);
+    console.log("buff op :" + op.length);
+    prev = String(prev);
+    curr = String(curr);
+    if ((prev.length > 0) && (curr.length > 0) && (op.length > 0)) {
+        return true;
+    } else {
+        return false;
+    }
+} 
 
 
 let buttonMenu = document.body.querySelector("#calculator-buttons");
-let displayed = document.body.querySelector("#display-content");
+let currDisplayed = document.body.querySelector("#display-current");
+let prevDisplayed = document.body.querySelector("#display-previous");
 
-let displayLeft = ""
-    , displayState = ""
-    , displayOperand = ""
-    , result = "";
+let currInput = ""
+    , prevInput = ""
+    , operandInput = ""
+    , operatorInBuff = false;
 
 
 buttonMenu.addEventListener("click", (e) => {
     clicked = e.target;
 
 
+    //1. If we already have an operand, a prev, and a curr, and we select operand, it should operate. operate(prev, operand, curr)
+    //2. If we have have a curr and we select an operand, prev should be initialized as curr and curr should be emptied
+    //      IF and only IF the operand is followed by a number.
+    //3. If there is a operand in the input and that same operand is inputted, perform operate(curr, operand, curr);
+
+    if (operatorInBuff) {
+        prevInput = currInput;
+        currInput = "";
+        operatorInBuff = false;
+    }
     switch (clicked.id) {
         case "button-1":
-            displayState += ("1");
+
+            currInput += ("1");
             break;
         case "button-2":
-            displayState += ("2");
+            currInput += ("2");
             break;
         case "button-3":
-            displayState += ("3");
+            currInput += ("3");
             break;
         case "button-4":
-            displayState += ("4");
+            currInput += ("4");
             break;
         case "button-5":
-            displayState += ("5");
+            currInput += ("5");
             break;
         case "button-6":
-            displayState += ("6");
+            currInput += ("6");
             break;
         case "button-7":
-            displayState += ("7");
+            currInput += ("7");
             break;
         case "button-8":
-            displayState += ("8");
+            currInput += ("8");
             break;
         case "button-9":
-            displayState += ("9");
+            currInput += ("9");
             break;
         case "button-0":
-            displayState += ("0");
+            currInput += ("0");
             break;      
         case "button-add":
-            displayLeft = displayState;
-            displayState = "";
-            displayOperand = " + ";
+
+            console.log("before add curr: " + currInput);
+            console.log("before add prev: " + prevInput);
+            console.log("before add operator: " + operandInput);
+            if (inputBuffIsFull(prevInput, currInput, operandInput)) {
+                console.log("inside function");
+                let temp = currInput;
+                currInput = operate(Number(prevInput), operandInput, Number(currInput));
+
+                prevInput = temp;
+
+            }  
+            operandInput = "+";
+            operatorInBuff = true;
             break;
         case "button-subtract":
-            displayLeft = displayState;
-            displayState = "";
-            displayOperand = " - ";
+            operandInput = "-";
             break;
         case "button-multiply":
-            displayLeft = displayState;
-            displayState = "";
-            displayOperand = " X ";
+            operandInput = "X";
             break;
         case "button-divide":
-            displayLeft = displayState;
-            displayState = "";
-            displayOperand = " / ";
+            operandInput = "/";
             break;
         case "button-equals":
-            console.log(Number(displayLeft));
-            console.log(Number(displayState));
-            result += operate(displayOperand, Number(displayLeft), Number(displayState));
-            displayOperand = "";
+            currInput = operate(Number(prevInput), operandInput, Number(currInput));
+            operandInput = "";
+            operatorInBuff = false;
             break;
         case "button-clear":
-            displayOperand = "";
-            displayLeft = "";
-            displayState = "";
+            operandInput = "";
+            prevInput = "";
+            currInput = "";
+            operatorInBuff = false;
             break;
         default:
             break;
 
     }
 
-    console.log(displayOperand.length)
-    if (displayOperand.length > 0) {
-        displayed.textContent = displayLeft + displayOperand + displayState;
-    } else if (result.length > 0) {
-        displayed.textContent = result;
-    } else {
-        displayed.textContent = displayState;
-    }
-    //Want to separate what's being displayed.
-    //Currently 3 possible states that could be displayed
+    
+    currDisplayed.textContent = currInput;
+    prevDisplayed.textContent = prevInput;
+    //Want to separate what's being currDisplayed.
+    //Currently 3 possible states that could be currDisplayed
     //1. The left side (before the operand is introduced)
     //2. The left the operand and the right side 
     //3. The result
 
     //I feel like the current problem is with my use of variables, SPecifically, I need to separarte the 
-    //result and the displayState variables. Right now, the final calculation is stored inside
-    //the displayState.
+    //result and the currInput variables. Right now, the final calculation is stored inside
+    //the currInput.
 })
