@@ -38,6 +38,7 @@ let buttonMenu = document.body.querySelector("#calculator-buttons");
 let currDisplayed = document.body.querySelector("#display-current");
 let prevDisplayed = document.body.querySelector("#display-previous");
 
+
 let currInput = ""
     , prevInput = ""
     , operatorInput = ""
@@ -103,10 +104,9 @@ buttonMenu.addEventListener("click", (e) => {
             currInput = "";
             operatorInBuff = false;
             break;
-        default:
-            break;
-
     }
+
+    
     currDisplayed.textContent = currInput;
     prevDisplayed.textContent = prevInput;
 })
