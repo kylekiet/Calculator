@@ -54,86 +54,49 @@ buttonMenu.addEventListener("click", (e) => {
             IF and only IF the operator is followed by a number.
         3. If there is a operator in the input and that same operator is inputted, perform operate(curr, operator, curr);
     */
-    
-    if ((operatorInBuff) && (clicked.className === "number")) {
-        //(Checking condition 2) Checks to see if there is a operator already selected by a user and if
-        //it is being followed up with a number. Then we need to store the previous inputs and
-        //begin displaying the user's new inputs.
-        console.log("in number precheck")
-        prevInput = currInput;
-        currInput = "";
-        operatorInBuff = false;
-    } else if ((inputBuffIsFull(prevInput, currInput, operatorInput)) && (clicked.className === "operator")) {
-        //(Checking condition 3) If the same operator is inputted 2 times in a row, or if an operator and curr and prev
-        //already exist diff operator is 
-        console.log("in operator precheck")
-        let temp = currInput;
-        currInput = operate(Number(prevInput), operatorInput, Number(currInput));
-
-        prevInput = temp;
-    }
-
-    switch (clicked.id) {
-        case "button-1":
-            currInput += ("1");
-            break;
-        case "button-2":
-            currInput += ("2");
-            break;
-        case "button-3":
-            currInput += ("3");
-            break;
-        case "button-4":
-            currInput += ("4");
-            break;
-        case "button-5":
-            currInput += ("5");
-            break;
-        case "button-6":
-            currInput += ("6");
-            break;
-        case "button-7":
-            currInput += ("7");
-            break;
-        case "button-8":
-            currInput += ("8");
-            break;
-        case "button-9":
-            currInput += ("9");
-            break;
-        case "button-0":
-            currInput += ("0");
-            break;      
-        case "button-add":
-            operatorInput = "+";
-            operatorInBuff = true;
-            break;
-        case "button-subtract":
-            operatorInput = "-";
-            operatorInBuff = true;
-            break;
-        case "button-multiply":
-            operatorInput = "X";
-            operatorInBuff = true;
-            break;
-        case "button-divide":
-            operatorInput = "/";
-            operatorInBuff = true;
-            break;
-        case "button-equals":
-            //(Checking condition 1) We only want to perform the equal operation if there are 2 number inputs
-            //and an operator
-            if (inputBuffIsFull(prevInput, currInput, operatorInput)) {
-                currInput = operate(Number(prevInput), operatorInput, Number(currInput));
-
-                //clearing the operator out of the buffer, but we still want to display the currInput
-                operatorInput = "";
-                operatorInBuff = false;                
-            } else {
-                console.log("ERROR: Can't operate, not enough values")
+  
+    switch (clicked.className) {
+        case "number":
+            if (operatorInBuff) {
+                console.log("OPERATOR IN BUFF!");
+                prevInput = currInput;
+                currInput = "";
+                operatorInBuff = false;
             }
+            currInput += clicked.textContent;
             break;
-        case "button-clear":
+        case "operator":
+            if (clicked.id === "button-equals") {
+                if (inputBuffIsFull(prevInput, currInput, operatorInput)) {
+                    //We are ready to operate, do so and clear input fields
+                    console.log("Clicked button-equals and buffer is full!")
+                    let temp = currInput;
+                    currInput = operate(Number(prevInput), operatorInput, Number(currInput));
+                    prevInput = temp;
+
+                    operatorInBuff = false;
+                    operatorInput = "";
+                } else {
+                    console.log("Can't operate, not enough inputs!");
+                }
+            } else {
+                //For every other possible operator
+                if (inputBuffIsFull(prevInput, currInput, operatorInput)) {
+                    //If the user selects an operator when there is already one in the buffer
+                    //Compute the inputs and previous operator, so we can move on and work with the
+                    //newest operator.
+                    let temp = currInput;
+
+                    currInput = operate(Number(prevInput), operatorInput, Number(currInput));
+                    prevInput = temp;
+                }
+
+                operatorInBuff = true;
+                operatorInput = clicked.textContent;
+            }
+
+            break;
+        case "clear":
             //clear and reset all inputs
             operatorInput = "";
             prevInput = "";
@@ -144,17 +107,6 @@ buttonMenu.addEventListener("click", (e) => {
             break;
 
     }
-
-    console.log("Current operator: " + operatorInput);
     currDisplayed.textContent = currInput;
     prevDisplayed.textContent = prevInput;
-    //Want to separate what's being currDisplayed.
-    //Currently 3 possible states that could be currDisplayed
-    //1. The left side (before the operator is introduced)
-    //2. The left the operator and the right side 
-    //3. The result
-
-    //I feel like the current problem is with my use of variables, SPecifically, I need to separarte the 
-    //result and the currInput variables. Right now, the final calculation is stored inside
-    //the currInput.
 })
