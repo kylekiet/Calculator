@@ -34,17 +34,25 @@ function inputBuffIsFull (prev, curr, op) {
     }
 } 
 
-let buttonMenu = document.body.querySelector("#calculator-buttons");
+function highlight (clicked, inBuff) {
+    const operatorHTML = document.getElementsByClassName("operator");
+    //clears all highlighted operators,
+    let operatorArray = Array.from(operatorHTML);
+    operatorArray = operatorArray.map((e) => e.style.backgroundColor = "transparent");
+
+    //then applies it to appropriate one if it exists.
+    if (inBuff) document.getElementById(clicked.id).style.backgroundColor = "rgb(190, 220, 230)";
+}
+
+let buttonMenu = document.body.querySelector(".calculator-buttons");
 let currDisplayed = document.body.querySelector("#display-current");
 let prevDisplayed = document.body.querySelector("#display-previous");
-
 
 let currInput = ""
     , prevInput = ""
     , operatorInput = ""
     , operatorInBuff = false; //We can't use operatorInput.length() for our checks b/c we would have
                               //to clear it after which breaks our logic when trying to use equals
-
 
 buttonMenu.addEventListener("click", (e) => {
     clicked = e.target;
@@ -86,6 +94,7 @@ buttonMenu.addEventListener("click", (e) => {
                     //If the user selects an operator when there is already one in the buffer
                     //Compute the inputs and previous operator, so we can move on and work with the
                     //newest operator.
+
                     let temp = currInput;
 
                     currInput = operate(Number(prevInput), operatorInput, Number(currInput));
@@ -97,8 +106,14 @@ buttonMenu.addEventListener("click", (e) => {
             }
 
             break;
+        case "decimal":
+            currInput.indexOf(".") == -1 ? currInput += "." : console.log("A decimal already exists");
+            break;
+        case "sign":
+            currInput = currInput * -1;
+            break;
         case "clear":
-            //clear and reset all inputs
+            //clear and reset all inputs/highlights
             operatorInput = "";
             prevInput = "";
             currInput = "";
@@ -106,7 +121,9 @@ buttonMenu.addEventListener("click", (e) => {
             break;
     }
 
-    
+
+
+    if ((clicked.className === "operator") || (clicked.className === "clear")) highlight(clicked, operatorInBuff);
     currDisplayed.textContent = currInput;
     prevDisplayed.textContent = prevInput;
 })
