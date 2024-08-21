@@ -21,9 +21,19 @@ function operate (a, operator, b) {
             b === 0 ? result = "bruh" : result = divide(a, b);
             break;
     }
-    console.log(result);
-    if ((result > 999999999) || (result < .0000001)) result = result.toExponential(3);
-    return result;
+    
+    //Checking for size. If size too big, turn to exponents.
+    //If too small set a fixed decimal length.
+    if (result < 1) {
+        return result.toFixed(7);
+    } else if (result > 999999) {
+        return result.toExponential(3);
+    } else {
+        return result;
+    }
+
+
+
 }
 
 
@@ -73,7 +83,7 @@ buttonMenu.addEventListener("click", (e) => {
         1. If we already have an operator, a prev, and a curr, and we select operator, it should operate. operate(prev, operator, curr)
         2. If we have have a curr and we select an operator, prev should be initialized as curr and curr should be emptied
             IF and only IF the operator is followed by a number.
-        3. If there is a operator in the input and that same operator is inputted, perform operate(curr, operator, curr);
+        3. If there is a operator in the input and that same operator is inputted, perform operate(prev, operator, curr);
     */
   
     switch (clicked.className) {
@@ -87,7 +97,7 @@ buttonMenu.addEventListener("click", (e) => {
 
             }
             prevDisplayContent = "";
-            if (currInput.length < 9) currInput += clicked.textContent;
+            if (String(currInput).length < 8) currInput += clicked.textContent;
             break;
         case "operator":
             if (clicked.id === "button-equals") {
@@ -138,12 +148,11 @@ buttonMenu.addEventListener("click", (e) => {
             operatorInBuff = false;
             break;
     }
-
+    console.log(currInput);
 
 
     if ((clicked.className === "operator") || (clicked.className === "clear")) highlight(clicked, operatorInBuff);
     
     currDisplayed.textContent = currInput; // Can only fit  9 digits on the screen at a time
-
-    prevDisplayed.textContent = prevDisplayContent;
+    prevDisplayContent ? prevDisplayed.textContent = prevDisplayContent : prevDisplayed.textContent = "";
 })
