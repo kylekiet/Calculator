@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(31, 30, 30);
+    background-color: rgb(29, 29, 29);
 }
 
 .calculator {
@@ -9,28 +9,33 @@ body {
     margin: 20px auto;
     display: flex;
     flex-wrap: wrap;
-    background-color: lightblue;
-    color:aliceblue;
+    background-color: rgb(68, 68, 68);
+    color: aliceblue;
     width: 400px;
-    height: 600px;
+    height: 550px;
 }
 
 .calculator-display {
     text-align: right;
-    border: solid 2px aliceblue;
     border-radius: 10px;
-    font-size: 36px;
+    font-size: 72px;
     margin: 20px;
     margin-bottom: 10px;
     flex-shrink:0;
     width: calc(100% - 44px);
     height: 30%;
+    max-height: 130;
     
 }
 
 #display-previous {
     font-size: 24px;
     min-height: 28px;
+}
+
+#display-current {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 
@@ -55,19 +60,14 @@ button size = (.calculator width - .calculator-buttons margin)/buttons per row -
 = 
 */
 .calculator-buttons button {
-    background-color: lightblue;
+    background-color: rgb(163, 163, 163);
     color: aliceblue;
     font-size: 32px;
     margin: 2px;
     width: 68px;
     height: 68px;
-    border: solid 2px;
+    border: 0px;
     border-radius: 10px;
-}
-
-.calculator-buttons :hover {
-    background-color: rgb(190, 220, 230);
-    cursor: pointer;
 }
 
 #button-clear, 
@@ -75,3 +75,19 @@ button size = (.calculator width - .calculator-buttons margin)/buttons per row -
     width: 140px;
     height: 68px;
 }
+
+
+.calculator-buttons .operator,
+.calculator-buttons .clear {
+    background-color: lightblue;
+}
+
+/*Using important b/c changing the style attribute via javascript comes later in the
+cascade, therefore, to increase the css hover priority, we use !important */
+.calculator-buttons button:hover {
+    background-color: white !important;
+    color: gray !important;
+    cursor: pointer;
+}
+
+

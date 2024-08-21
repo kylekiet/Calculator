@@ -4,24 +4,29 @@ let multiply = (a, b) => a * b;
 let divide = (a, b) => a/b;
 
 function operate (a, operator, b) {
-
     a = Number(a);
     b = Number(b);
+    let result = 0;
     switch (operator) {
         case "+":
-            return add(a,b);
+            result = add(a,b);
             break;
         case "-":
-            return subtract(a, b);
+            result = subtract(a, b);
             break;
         case "X":
-            return multiply(a, b);
+            result = multiply(a, b);
             break;
         case "/":
-            return divide(a, b);
+            b === 0 ? result = "bruh" : result = divide(a, b);
             break;
     }
+    console.log(result);
+    if ((result > 999999999) || (result < .0000001)) result = result.toExponential(3);
+    return result;
 }
+
+
 
 function inputBuffIsFull (prev, curr, op) {
     //Checks if there exists a prevInput, currInput, and operatorInput
@@ -38,10 +43,16 @@ function highlight (clicked, inBuff) {
     const operatorHTML = document.getElementsByClassName("operator");
     //clears all highlighted operators,
     let operatorArray = Array.from(operatorHTML);
-    operatorArray = operatorArray.map((e) => e.style.backgroundColor = "transparent");
+    operatorArray = operatorArray.map((e) => {
+        e.style.backgroundColor = "lightblue";
+        e.style.color = "aliceblue";
+    });
 
     //then applies it to appropriate one if it exists.
-    if (inBuff) document.getElementById(clicked.id).style.backgroundColor = "rgb(190, 220, 230)";
+    if (inBuff) {
+        document.getElementById(clicked.id).style.backgroundColor = "white";
+        document.getElementById(clicked.id).style.color = "lightblue";
+    }
 }
 
 let buttonMenu = document.body.querySelector(".calculator-buttons");
@@ -49,6 +60,7 @@ let currDisplayed = document.body.querySelector("#display-current");
 let prevDisplayed = document.body.querySelector("#display-previous");
 
 let currInput = ""
+    , prevDisplayContent = ""
     , prevInput = ""
     , operatorInput = ""
     , operatorInBuff = false; //We can't use operatorInput.length() for our checks b/c we would have
@@ -68,11 +80,14 @@ buttonMenu.addEventListener("click", (e) => {
         case "number":
             if (operatorInBuff) {
                 console.log("OPERATOR IN BUFF!");
+                if (currInput.length === 0) currInput += "0"; //User clicked on an operator with no input
                 prevInput = currInput;
                 currInput = "";
                 operatorInBuff = false;
+
             }
-            currInput += clicked.textContent;
+            prevDisplayContent = "";
+            if (currInput.length < 9) currInput += clicked.textContent;
             break;
         case "operator":
             if (clicked.id === "button-equals") {
@@ -80,6 +95,7 @@ buttonMenu.addEventListener("click", (e) => {
                     //We are ready to operate, do so and clear input fields
                     console.log("Clicked button-equals and buffer is full!")
                     let temp = currInput;
+                    prevDisplayContent = prevInput + " " + operatorInput + " " + currInput + " = ";
                     currInput = operate(Number(prevInput), operatorInput, Number(currInput));
                     prevInput = temp;
 
@@ -96,9 +112,10 @@ buttonMenu.addEventListener("click", (e) => {
                     //newest operator.
 
                     let temp = currInput;
-
+                    prevDisplayContent = prevInput + " " + operatorInput + " " + currInput + " = ";
                     currInput = operate(Number(prevInput), operatorInput, Number(currInput));
                     prevInput = temp;
+
                 }
 
                 operatorInBuff = true;
@@ -117,6 +134,7 @@ buttonMenu.addEventListener("click", (e) => {
             operatorInput = "";
             prevInput = "";
             currInput = "";
+            prevDisplayContent = "";
             operatorInBuff = false;
             break;
     }
@@ -124,6 +142,8 @@ buttonMenu.addEventListener("click", (e) => {
 
 
     if ((clicked.className === "operator") || (clicked.className === "clear")) highlight(clicked, operatorInBuff);
-    currDisplayed.textContent = currInput;
-    prevDisplayed.textContent = prevInput;
+    
+    currDisplayed.textContent = currInput; // Can only fit  9 digits on the screen at a time
+
+    prevDisplayed.textContent = prevDisplayContent;
 })
