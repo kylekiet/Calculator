@@ -1,4 +1,6 @@
-## Calculator project for The Odin Project.
+# [DEMO](https://kylekiet.github.io/Calculator/)
+
+## Calculator project for The Odin Project
 
 In this project I wanted to incorporate and practice as many Javascript specific tools as possible. I used ternary operators, array methods such as map(), switch statements, arrow functions, and DOM manipulation.
 I also got to practice my flexbox skills and CSS. 
