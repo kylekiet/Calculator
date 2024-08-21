@@ -24,13 +24,17 @@ function operate (a, operator, b) {
     
     //Checking for size. If size too big, turn to exponents.
     //If too small set a fixed decimal length.
-    if (result < 1) {
-        return result.toFixed(7);
-    } else if (result > 999999) {
-        return result.toExponential(3);
-    } else {
-        return result;
+    console.log(result);
+    result = String(result);
+    if (result.length > 8) {
+        if (result > 999999) {
+            result = Number(result).toExponential(3);
+        } else if (result.indexOf(".")) {
+            result = parseFloat(result).toFixed(8 - result.indexOf("."))
+        }
     }
+
+    return result;
 
 
 
